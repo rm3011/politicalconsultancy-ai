@@ -1,0 +1,461 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
+
+/* ============================================================ */
+/* BASE RESET */
+/* ============================================================ */
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+}
+
+:root {
+  /* New Dark Theme Colors - Charcoal & Deep Grey */
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #121212;
+  --bg-tertiary: #1a1a1a;
+  --bg-card: #141414;
+  --bg-elevated: #1e1e1e;
+  --bg-input: #0f0f0f;
+  
+  /* Red Theme Colors */
+  --neu-bg: #0a0a0a;
+  --neu-shadow-light: rgba(220, 38, 38, 0.06);
+  --neu-shadow-dark: rgba(0, 0, 0, 0.7);
+  --neu-shadow-soft: rgba(220, 38, 38, 0.03);
+  --neu-red-light: rgba(220, 38, 38, 0.08);
+  
+  /* Border Colors */
+  --border-subtle: rgba(255, 255, 255, 0.04);
+  --border-medium: rgba(255, 255, 255, 0.06);
+  --border-strong: rgba(255, 255, 255, 0.08);
+}
+
+/* ============================================================ */
+/* BODY & TYPOGRAPHY */
+/* ============================================================ */
+
+html,
+body {
+  background: var(--bg-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #f5f0e8;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: 0.015em;
+}
+
+/* Default headings - Outfit for modern look */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', 'Inter', sans-serif;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+}
+
+/* Hero section - Keep Anton for impact */
+.hero-title,
+.hero-title h1,
+.hero-title span,
+section:first-of-type h1,
+section:first-of-type h2,
+section:first-of-type h3 {
+  font-family: 'Anton', 'Outfit', 'Inter', sans-serif !important;
+  letter-spacing: -0.03em !important;
+  line-height: 0.85 !important;
+}
+
+/* Override heading styles in navigation */
+nav h1, nav h2, nav h3, nav h4, nav h5, nav h6,
+.nav-heading {
+  font-family: 'Inter', sans-serif !important;
+  letter-spacing: 0.01em !important;
+}
+
+/* Paragraph readability */
+p {
+  letter-spacing: 0.015em;
+  line-height: 1.8;
+}
+
+/* Navigation fixes */
+nav a, .nav-link {
+  font-weight: 500 !important;
+}
+
+nav ul, nav li {
+  margin: 0 !important;
+  padding: 0 !important;
+  list-style: none !important;
+}
+
+/* ============================================================ */
+/* TEXT UTILITY CLASSES */
+/* ============================================================ */
+
+.text-corporate {
+  letter-spacing: 0.03em;
+  line-height: 1.8;
+}
+
+.text-corporate-tight {
+  letter-spacing: 0.015em;
+  line-height: 1.6;
+}
+
+.text-red-corporate {
+  color: #dc2626;
+  letter-spacing: 0.025em;
+}
+
+.text-subtle {
+  color: #a0a0a0;
+  letter-spacing: 0.02em;
+  line-height: 1.9;
+  font-weight: 300;
+}
+
+.text-small {
+  letter-spacing: 0.12em;
+  font-weight: 400;
+}
+
+/* Button text spacing */
+button, .btn {
+  letter-spacing: 0.06em;
+}
+
+/* Heading variants with better spacing */
+.heading-display {
+  font-family: 'Outfit', 'Inter', sans-serif;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+.heading-section {
+  font-family: 'Outfit', 'Inter', sans-serif;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.heading-sub {
+  font-family: 'Outfit', 'Inter', sans-serif;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+/* Hero-specific utility - Use Anton */
+.hero-anton {
+  font-family: 'Anton', 'Outfit', 'Inter', sans-serif !important;
+  letter-spacing: -0.03em !important;
+  line-height: 0.85 !important;
+}
+
+/* ============================================================ */
+/* NEUOMORPHISM - ENHANCED DARK THEME */
+/* ============================================================ */
+
+/* Main Cards - Elevated */
+.neuomorphic-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-medium);
+  border-radius: 1.25rem;
+  box-shadow: 
+    0px 4px 20px rgba(0, 0, 0, 0.6),
+    0px 1px 3px rgba(255, 255, 255, 0.02),
+    inset 0px 1px 0px rgba(255, 255, 255, 0.03);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.neuomorphic-card:hover {
+  border-color: rgba(220, 38, 38, 0.15);
+  box-shadow: 
+    0px 8px 30px rgba(0, 0, 0, 0.8),
+    0px 1px 3px rgba(255, 255, 255, 0.04),
+    inset 0px 1px 0px rgba(255, 255, 255, 0.05);
+}
+
+/* Flat elements - Background level */
+.neuomorphic-flat {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.75rem;
+  box-shadow: 
+    inset 2px 2px 8px rgba(0, 0, 0, 0.6),
+    inset -2px -2px 8px rgba(255, 255, 255, 0.02);
+  transition: all 0.3s ease;
+}
+
+.neuomorphic-flat:hover {
+  border-color: rgba(220, 38, 38, 0.1);
+  background: var(--bg-tertiary);
+}
+
+/* Icons - Elevated elements */
+.neuomorphic-icon {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.75rem;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 
+    4px 4px 12px rgba(0, 0, 0, 0.6),
+    -4px -4px 12px rgba(255, 255, 255, 0.02);
+  transition: all 0.3s ease;
+}
+
+.neuomorphic-icon:hover {
+  border-color: rgba(220, 38, 38, 0.2);
+  box-shadow: 
+    4px 4px 16px rgba(0, 0, 0, 0.8),
+    -4px -4px 16px rgba(255, 255, 255, 0.03);
+}
+
+/* Small icon variant */
+.neuomorphic-icon-small {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 
+    3px 3px 8px rgba(0, 0, 0, 0.5),
+    -3px -3px 8px rgba(255, 255, 255, 0.02);
+  transition: all 0.3s ease;
+}
+
+/* Card hover effects */
+.neuomorphic-card-hover {
+  transition: all 0.4s ease;
+}
+
+.neuomorphic-card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0px 12px 40px rgba(0, 0, 0, 0.8),
+    0px 1px 3px rgba(255, 255, 255, 0.04),
+    inset 0px 1px 0px rgba(255, 255, 255, 0.05);
+  border-color: rgba(220, 38, 38, 0.12);
+}
+
+/* Input fields - Dark but distinct */
+.neuomorphic-input {
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: #ffffff;
+  transition: all 0.3s ease;
+  box-shadow: 
+    inset 2px 2px 6px rgba(0, 0, 0, 0.6),
+    inset -2px -2px 6px rgba(255, 255, 255, 0.02);
+}
+
+.neuomorphic-input:focus {
+  border-color: rgba(220, 38, 38, 0.3);
+  box-shadow: 
+    inset 2px 2px 6px rgba(0, 0, 0, 0.6),
+    inset -2px -2px 6px rgba(255, 255, 255, 0.02),
+    0px 0px 20px rgba(220, 38, 38, 0.05);
+  outline: none;
+}
+
+.neuomorphic-input:hover {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Scrollbar for neuomorphic components */
+.neuomorphic-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.neuomorphic-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.neuomorphic-scroll::-webkit-scrollbar-thumb {
+  background: rgba(220, 38, 38, 0.2);
+  border-radius: 4px;
+}
+
+.neuomorphic-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(220, 38, 38, 0.3);
+}
+
+/* ============================================================ */
+/* BUTTONS */
+/* ============================================================ */
+
+.neuomorphic-btn {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-medium);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  box-shadow: 
+    4px 4px 12px rgba(0, 0, 0, 0.4),
+    -4px -4px 12px rgba(255, 255, 255, 0.02),
+    inset 0px 1px 0px rgba(255, 255, 255, 0.03);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  color: #ffffff;
+}
+
+.neuomorphic-btn:hover {
+  background: var(--bg-elevated);
+  border-color: rgba(220, 38, 38, 0.2);
+  transform: translateY(-1px);
+  box-shadow: 
+    4px 4px 16px rgba(0, 0, 0, 0.6),
+    -4px -4px 16px rgba(255, 255, 255, 0.03),
+    inset 0px 1px 0px rgba(255, 255, 255, 0.05);
+}
+
+.neuomorphic-btn:active {
+  box-shadow: 
+    inset 4px 4px 8px rgba(0, 0, 0, 0.6),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.02);
+}
+
+/* Primary Button */
+.neuomorphic-btn-primary {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  box-shadow: 
+    4px 4px 12px rgba(0, 0, 0, 0.4),
+    -4px -4px 12px rgba(255, 255, 255, 0.02),
+    0px 0px 20px rgba(220, 38, 38, 0.1);
+}
+
+.neuomorphic-btn-primary:hover {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  box-shadow: 
+    4px 4px 16px rgba(0, 0, 0, 0.6),
+    -4px -4px 16px rgba(255, 255, 255, 0.03),
+    0px 0px 30px rgba(220, 38, 38, 0.2);
+}
+
+/* ============================================================ */
+/* RED THEME GRADIENTS */
+/* ============================================================ */
+
+.red-gradient {
+  background: linear-gradient(135deg, #dc2626 0%, #ef4444 30%, #dc2626 60%, #b91c1c 100%);
+}
+
+.red-text {
+  background: linear-gradient(135deg, #dc2626 0%, #ef4444 40%, #dc2626 70%, #b91c1c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+.red-glow {
+  background: radial-gradient(circle at center, rgba(220, 38, 38, 0.4) 0%, transparent 70%);
+}
+
+/* ============================================================ */
+/* ANIMATIONS */
+/* ============================================================ */
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes redPulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
+}
+
+.animate-fade-up {
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.animate-red-pulse {
+  animation: redPulse 3s ease-in-out infinite;
+}
+
+.animate-float-slow {
+  animation: floatSlow 6s ease-in-out infinite;
+}
+
+/* ============================================================ */
+/* SCROLLBAR STYLING */
+/* ============================================================ */
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #dc2626;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #b91c1c;
+}
+
+/* Selection Color */
+::selection {
+  background: #dc2626;
+  color: white;
+}
+
+::-moz-selection {
+  background: #dc2626;
+  color: white;
+}
+
+/* ============================================================ */
+/* CONTAINER UTILITY */
+/* ============================================================ */
+
+@layer components {
+  .container-custom {
+    max-width: 80rem;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .container-custom {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container-custom {
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+  }
+}

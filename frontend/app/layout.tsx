@@ -1,0 +1,159 @@
+import type { Metadata, Viewport } from 'next';
+import { Inter, Playfair_Display, Anton } from 'next/font/google';
+import './globals.css';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+});
+
+const playfair = Playfair_Display({
+  subsets: ['latin'],
+  variable: '--font-playfair',
+  display: 'swap',
+});
+
+const anton = Anton({
+  subsets: ['latin'],
+  weight: '400',
+  variable: '--font-anton',
+  display: 'swap',
+});
+
+export const metadata: Metadata = {
+  metadataBase: new URL('https://theedgewithjohn.com'),
+  title: {
+    template: '%s | The Edge With John - Political Consultancy',
+    default: 'The Edge With John - Political Consultancy',
+  },
+  description: 'Data-driven political consultancy leveraging AI, predictive analytics, and strategic intelligence. Transform your political campaign with The Edge With John.',
+  keywords: [
+    'political consultancy',
+    'political strategy',
+    'AI politics',
+    'election strategy',
+    'political campaign',
+    'data-driven politics',
+    'political intelligence',
+    'The Edge With John',
+  ],
+  authors: [{ name: 'John', url: 'https://theedgewithjohn.com' }],
+  creator: 'The Edge With John',
+  publisher: 'The Edge With John',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://theedgewithjohn.com',
+    siteName: 'The Edge With John',
+    title: 'The Edge With John - AI-Powered Political Consultancy',
+    description: 'Data-driven political consultancy leveraging AI, predictive analytics, and strategic intelligence. Transform your political campaign.',
+    images: [
+      {
+        url: '/logo-final.png',
+        width: 1200,
+        height: 630,
+        alt: 'The Edge With John - Political Consultancy',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    site: '@theedgewithjohn',
+    creator: '@theedgewithjohn',
+    title: 'The Edge With John - AI-Powered Political Consultancy',
+    description: 'Data-driven political consultancy leveraging AI, predictive analytics, and strategic intelligence.',
+    images: ['/og-image.png'],
+  },
+  alternates: {
+    canonical: 'https://theedgewithjohn.com',
+  },
+  category: 'Politics',
+  icons: {
+    icon: [
+      { url: '/favicon.ico' },
+      { url: '/logo-final.png', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png' },
+    ],
+    shortcut: ['/favicon.ico'],
+  },
+  manifest: '/site.webmanifest',
+  verification: {
+    google: 'your-google-verification-code',
+  },
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: '#b89168',
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en" className={`${inter.variable} ${playfair.variable} ${anton.variable}`}>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="icon" href="/logo.png" type="image/png" sizes="32x32" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="manifest" href="/site.webmanifest" />
+        <meta name="msapplication-TileColor" content="#b89168" />
+        <meta name="google-site-verification" content="your-google-verification-code" />
+        <meta name="geo.region" content="IN" />
+        <meta name="geo.placename" content="India" />
+        <meta name="geo.position" content="20.5937;78.9629" />
+        <meta name="ICBM" content="20.5937, 78.9629" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Organization',
+              name: 'The Edge With John',
+              description: 'AI-powered political consultancy',
+              url: 'https://theedgewithjohn.com',
+              logo: 'https://theedgewithjohn.com/logo.png',
+              sameAs: [
+                'https://twitter.com/theedgewithjohn',
+                'https://linkedin.com/company/the-edge-with-john',
+                'https://youtube.com/@theedgewithjohn',
+              ],
+              contactPoint: {
+                '@type': 'ContactPoint',
+                telephone: '+91-XXXXXXXXXX',
+                contactType: 'Sales',
+              },
+            }),
+          }}
+        />
+      </head>
+
+      <body className={`${inter.className} bg-[#050505] text-white antialiased`}>
+        <Navbar />
+        <main>{children}</main>
+        <Footer />
+      </body>
+    </html>
+  );
+}
