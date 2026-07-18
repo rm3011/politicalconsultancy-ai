@@ -172,7 +172,7 @@ const Hero = memo(({ className = '' }: HeroProps) => {
         {!imageError ? (
           <>
             <Image
-              src="/india-img.png"
+              src="/india-2.png"
               alt="India map background"
               fill
               priority

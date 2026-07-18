@@ -289,7 +289,7 @@ export default function About() {
             <div className="relative w-full mx-auto overflow-hidden group">
               <div className="relative" style={{ aspectRatio: '3/4' }}>
                 <Image
-                  src="/about/owner-final.png"
+                  src="/about/owner.png"
                   alt="Founder and CEO of NEVAS Political Consultancy"
                   fill
                   priority
