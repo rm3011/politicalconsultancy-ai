@@ -1,531 +1,312 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo, memo, useRef, useLayoutEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 
-// ============================================================================
-// Constants
-// ============================================================================
-
-const SCROLL_THRESHOLD = 50;
-const NAVIGATION_DEBOUNCE_MS = 300;
-
-interface NavLink {
-  name: string;
-  href: string;
-}
-
-const NAV_LINKS: readonly NavLink[] = [
+const NAV_LINKS = [
   { name: 'Home', href: '/' },
   { name: 'Who We Are', href: '/#about' },
   { name: 'What We Do', href: '/#services' },
   { name: 'Our Impacts', href: '/#impacts' },
 ] as const;
 
-// ============================================================================
-// Sub-components
-// ============================================================================
+type NavLink = typeof NAV_LINKS[number];
 
-const NavLinkItem = memo(({
-  link,
-  isActive,
-  isMobile = false,
-  onNavigate,
-  onClose,
-}: {
-  link: NavLink;
-  isActive: boolean;
-  isMobile?: boolean;
-  onNavigate: (href: string) => void;
-  onClose?: () => void;
-}) => {
-  const handleClick = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    onNavigate(link.href);
-    if (isMobile && onClose) {
-      onClose();
+// Animation variants moved outside component to prevent recreation
+// Using proper Framer Motion easing types
+const mobileMenuVariants = {
+  initial: { 
+    height: 0, 
+    opacity: 0,
+    scaleY: 0.8,
+    transformOrigin: 'top'
+  },
+  animate: { 
+    height: 'auto', 
+    opacity: 1,
+    scaleY: 1,
+    transformOrigin: 'top',
+    transition: {
+      duration: 0.3,
+      ease: 'easeOut' as const, // Use string literal type
+      staggerChildren: 0.05,
+      delayChildren: 0.05
     }
-  }, [link.href, onNavigate, isMobile, onClose]);
+  },
+  exit: { 
+    height: 0, 
+    opacity: 0,
+    scaleY: 0.8,
+    transformOrigin: 'top',
+    transition: {
+      duration: 0.25,
+      ease: 'easeIn' as const // Use string literal type
+    }
+  }
+};
 
-  return (
-    <Link
-      href={link.href}
-      className={`
-        relative px-2 md:px-3 py-2.5 md:py-0 
-        text-[15px] sm:text-[16px] md:text-[17px] lg:text-[18px] 
-        font-medium transition-all duration-200
-        ${isActive 
-          ? 'text-red-500' 
-          : 'text-neutral-400 hover:text-white'
-        }
-        ${isMobile ? 'block w-full border-b border-red-600/5 last:border-0' : ''}
-        focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#020202]
-      `}
-      aria-current={isActive ? 'page' : undefined}
-      prefetch={link.href === '/' ? true : undefined}
-      onClick={handleClick}
-    >
-      {link.name}
-      {isActive && !isMobile && (
-        <motion.div
-          layoutId="navbar-indicator"
-          className="absolute -bottom-0.5 left-0 w-full h-0.5 bg-red-500 rounded-full shadow-[0_0_20px_rgba(255,0,0,0.5)]"
-          transition={{ type: 'spring', duration: 0.3, bounce: 0.2 }}
-        />
-      )}
-      {isActive && isMobile && (
-        <span className="absolute right-4 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-red-500 shadow-[0_0_20px_rgba(255,0,0,0.5)]" />
-      )}
-    </Link>
-  );
-});
+const itemVariants = {
+  initial: { 
+    opacity: 0, 
+    x: -20,
+    scale: 0.95
+  },
+  animate: { 
+    opacity: 1, 
+    x: 0,
+    scale: 1,
+    transition: {
+      duration: 0.25,
+      ease: 'easeOut' as const // Use string literal type
+    }
+  },
+  exit: { 
+    opacity: 0, 
+    x: -10,
+    scale: 0.95,
+    transition: {
+      duration: 0.15,
+      ease: 'easeIn' as const // Use string literal type
+    }
+  }
+};
 
-NavLinkItem.displayName = 'NavLinkItem';
-
-// ============================================================================
-// Custom Hooks
-// ============================================================================
-
-/**
- * Hook to manage scroll state with throttling for reliability
- * Fixed: No setState in useEffect body
- */
-function useScrollState(threshold: number): boolean {
+const useScrollState = (threshold = 50) => {
   const [scrolled, setScrolled] = useState(false);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const isInitializedRef = useRef(false);
-
+  
   useEffect(() => {
     if (typeof window === 'undefined') return;
-
+    
     const handleScroll = () => {
-      if (timeoutRef.current) return;
-      
-      timeoutRef.current = setTimeout(() => {
-        const shouldBeScrolled = window.scrollY > threshold;
-        setScrolled(shouldBeScrolled);
-        timeoutRef.current = null;
-      }, 30);
+      const next = window.scrollY > threshold;
+      setScrolled(prev => prev === next ? prev : next);
     };
-
-    // Set initial state using useLayoutEffect instead
-    // We'll handle this with a separate effect or use a ref
-    if (!isInitializedRef.current) {
-      // Use a timeout to avoid setState during render
-      const initialTimeout = setTimeout(() => {
-        setScrolled(window.scrollY > threshold);
-        isInitializedRef.current = true;
-      }, 0);
-      
-      return () => {
-        clearTimeout(initialTimeout);
-        window.removeEventListener('scroll', handleScroll);
-      };
-    }
-
+    
+    handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
-    
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-        timeoutRef.current = null;
-      }
-      window.removeEventListener('scroll', handleScroll);
-    };
+    return () => window.removeEventListener('scroll', handleScroll);
   }, [threshold]);
-
+  
   return scrolled;
-}
+};
 
-/**
- * Hook to manage mobile menu with body scroll lock
- * Fixed: No setState in useEffect
- */
-function useMobileMenu() {
-  const [isOpen, setIsOpen] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
-  const pathname = usePathname();
-  const previousPathnameRef = useRef(pathname);
-
-  // Close menu on route change - using useLayoutEffect to avoid setState during render
-  useLayoutEffect(() => {
-    if (previousPathnameRef.current !== pathname) {
-      // Use a timeout to avoid setState during render
-      const timeoutId = setTimeout(() => {
-        setIsOpen(false);
-        previousPathnameRef.current = pathname;
-      }, 0);
-      
-      return () => clearTimeout(timeoutId);
-    }
-  }, [pathname]);
-
-  // Lock body scroll when menu is open
-  useLayoutEffect(() => {
-    if (!isOpen) {
-      document.body.style.overflow = '';
-      return;
-    }
-
-    const originalOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    
-    return () => {
-      document.body.style.overflow = originalOverflow;
-    };
-  }, [isOpen]);
-
-  // Close on outside click
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside, { capture: true });
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside, { capture: true });
-    };
-  }, [isOpen]);
-
-  return { isOpen, setIsOpen, menuRef };
-}
-
-/**
- * Hook to manage active navigation state with scroll-spy
- */
-function useActiveNavigation(pathname: string) {
-  const [activeHash, setActiveHash] = useState<string | null>(null);
-  const observerRef = useRef<IntersectionObserver | null>(null);
-  const isNavigatingRef = useRef(false);
-
-  // Function to check which section is active
-  const checkActiveSection = useCallback(() => {
-    if (typeof window === 'undefined' || pathname !== '/') return;
-    
-    const scrollY = window.scrollY;
-    
-    if (scrollY < SCROLL_THRESHOLD) {
-      setActiveHash(null);
-      return;
-    }
-
-    const sections = NAV_LINKS
-      .filter((link) => link.href.startsWith('/#'))
-      .map((link) => ({
-        id: link.href.split('#')[1],
-        element: document.getElementById(link.href.split('#')[1])
-      }))
-      .filter((item): item is { id: string; element: HTMLElement } => 
-        Boolean(item.element)
-      );
-
-    for (const section of sections) {
-      const rect = section.element.getBoundingClientRect();
-      if (rect.top <= 150 && rect.bottom >= 100) {
-        setActiveHash(`#${section.id}`);
-        return;
-      }
-    }
-  }, [pathname]);
-
-  // Handle navigation clicks
-  const handleNavigate = useCallback((href: string) => {
-    const hash = href.includes('#') ? `#${href.split('#')[1]}` : null;
-    setActiveHash(hash);
-    
-    if (hash) {
-      isNavigatingRef.current = true;
-      setTimeout(() => {
-        isNavigatingRef.current = false;
-        checkActiveSection();
-      }, NAVIGATION_DEBOUNCE_MS);
-    } else {
-      setActiveHash(null);
-    }
-  }, [checkActiveSection]);
-
-  // Check if a link is active
-  const isActive = useCallback((href: string): boolean => {
-    if (pathname !== '/') {
-      return href === '/';
-    }
-    
-    if (href === '/') {
-      return !activeHash;
-    }
-    
-    if (href.startsWith('/#')) {
-      const hash = `#${href.split('#')[1]}`;
-      return activeHash === hash;
-    }
-    
-    return pathname === href;
-  }, [pathname, activeHash]);
-
-  // Setup scroll-spy observer
-  useEffect(() => {
-    if (typeof window === 'undefined' || pathname !== '/') {
-      return;
-    }
-
-    if (observerRef.current) {
-      observerRef.current.disconnect();
-      observerRef.current = null;
-    }
-
-    const sections = NAV_LINKS
-      .filter((link) => link.href.startsWith('/#'))
-      .map((link) => document.getElementById(link.href.split('#')[1]))
-      .filter((el): el is HTMLElement => Boolean(el));
-
-    if (sections.length === 0) return;
-
-    observerRef.current = new IntersectionObserver(
-      (entries) => {
-        if (isNavigatingRef.current) return;
-
-        const visibleEntries = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => {
-            const rectA = a.boundingClientRect;
-            const rectB = b.boundingClientRect;
-            return Math.abs(rectA.top) - Math.abs(rectB.top);
-          });
-
-        if (visibleEntries.length > 0) {
-          const targetId = visibleEntries[0].target.id;
-          setActiveHash(`#${targetId}`);
-        } else {
-          checkActiveSection();
-        }
-      },
-      {
-        rootMargin: '-20% 0px -30% 0px',
-        threshold: [0, 0.1, 0.3, 0.5],
-      }
-    );
-
-    sections.forEach((el) => observerRef.current!.observe(el));
-
-    // Add scroll listener as fallback for Home detection
-    const handleScrollFallback = () => {
-      if (isNavigatingRef.current) return;
-      
-      const scrollY = window.scrollY;
-      if (scrollY < SCROLL_THRESHOLD) {
-        setActiveHash(null);
-      }
-    };
-
-    window.addEventListener('scroll', handleScrollFallback, { passive: true });
-
-    // Initial check
-    const initialCheckTimeout = setTimeout(() => {
-      checkActiveSection();
-    }, 100);
-
-    return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-        observerRef.current = null;
-      }
-      clearTimeout(initialCheckTimeout);
-      window.removeEventListener('scroll', handleScrollFallback);
-    };
-  }, [pathname, checkActiveSection]);
-
-  return { activeHash, handleNavigate, isActive };
-}
-
-// ============================================================================
-// Main Component
-// ============================================================================
+const NavLinkItem = ({ link, isActive, isMobile = false, onClick }: { 
+  link: NavLink; 
+  isActive: boolean; 
+  isMobile?: boolean;
+  onClick?: () => void;
+}) => (
+  <Link
+    href={link.href}
+    className={`
+      relative px-2 md:px-3 py-2.5 md:py-0 
+      text-[15px] md:text-[17px] lg:text-[18px] 
+      font-medium transition-colors duration-200
+      ${isActive ? 'text-red-500' : 'text-neutral-400 hover:text-white'}
+      ${isMobile ? 'block w-full border-b border-red-600/5 last:border-0' : ''}
+      focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500
+    `}
+    onClick={onClick}
+  >
+    {link.name}
+    {isActive && !isMobile && (
+      <motion.div
+        layoutId="navbar-indicator"
+        className="absolute -bottom-0.5 left-0 w-full h-0.5 bg-red-500 rounded-full shadow-[0_0_20px_rgba(255,0,0,0.5)]"
+        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+      />
+    )}
+  </Link>
+);
 
 export default function Navbar() {
   const pathname = usePathname();
-  const scrolled = useScrollState(SCROLL_THRESHOLD);
-  const { isOpen, setIsOpen, menuRef } = useMobileMenu();
-  const { handleNavigate, isActive } = useActiveNavigation(pathname);
+  const scrolled = useScrollState();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('hero');
+  const menuRef = useRef<HTMLDivElement>(null);
+  const isHomePage = pathname === '/';
 
-  const navLinks = useMemo(() => NAV_LINKS, []);
-  
-  const desktopNavLinks = useMemo(() => 
-    navLinks.map((link) => (
-      <NavLinkItem
-        key={link.name}
-        link={link}
-        isActive={isActive(link.href)}
-        onNavigate={handleNavigate}
-      />
-    )),
-    [navLinks, isActive, handleNavigate]
-  );
+  const closeMenu = () => setIsMobileMenuOpen(false);
 
-  const mobileNavLinks = useMemo(() =>
-    navLinks.map((link) => (
-      <NavLinkItem
-        key={link.name}
-        link={link}
-        isActive={isActive(link.href)}
-        isMobile
-        onNavigate={handleNavigate}
-        onClose={() => setIsOpen(false)}
-      />
-    )),
-    [navLinks, isActive, handleNavigate, setIsOpen]
-  );
+  // Lock body scroll
+  useEffect(() => {
+    document.body.style.overflow = isMobileMenuOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [isMobileMenuOpen]);
+
+  // Close on outside click
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+    
+    const handleClickOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isMobileMenuOpen]);
+
+  // Scroll spy - improved with robust section detection
+  useEffect(() => {
+    // Only observe sections on home page
+    if (!isHomePage) return;
+
+    const sectionIds = ['hero', 'about', 'services', 'impacts'];
+    const sections = sectionIds
+      .map(id => document.getElementById(id))
+      .filter((el): el is HTMLElement => Boolean(el));
+
+    if (!sections.length) return;
+
+    // Use IntersectionObserver with multiple thresholds for better detection
+    const observer = new IntersectionObserver(
+      () => {
+        let current = 'hero';
+        const viewportCenter = window.innerHeight * 0.35; // 35% from top
+
+        // Find which section is most visible
+        for (const section of sections) {
+          const rect = section.getBoundingClientRect();
+          
+          // Section is considered active when its top is above viewport center
+          // and its bottom is below viewport center
+          if (rect.top <= viewportCenter && rect.bottom >= viewportCenter) {
+            current = section.id;
+            break;
+          }
+          
+          // If we're past the last section, keep the last one active
+          if (rect.top <= viewportCenter) {
+            current = section.id;
+          }
+        }
+
+        // Only update if changed to prevent unnecessary renders
+        setActiveSection(prev => prev === current ? prev : current);
+      },
+      {
+        threshold: [0, 0.25, 0.5, 0.75, 1], // Multiple thresholds for stability
+        rootMargin: '-35% 0px -35% 0px' // Active when in the center 30% of viewport
+      }
+    );
+
+    sections.forEach(section => observer.observe(section));
+
+    return () => observer.disconnect();
+  }, [isHomePage]);
+
+  // Determine active state - single source of truth
+  const isActive = (href: string) => {
+    if (!isHomePage) {
+      return pathname === href;
+    }
+
+    if (href === '/') {
+      return activeSection === 'hero';
+    }
+
+    return activeSection === href.slice(2);
+  };
 
   return (
     <>
-      <nav
-        className={`
-          fixed top-0 left-0 right-0 z-50 
-          transition-all duration-300 
-          px-3 sm:px-4 md:px-6 lg:px-8 xl:px-10 
-          h-14 sm:h-16 md:h-18 lg:h-20
-          ${scrolled
-            ? 'bg-[#141414]/95 backdrop-blur-md border-b border-white/5 shadow-[0_4px_30px_rgba(0,0,0,0.3)]'
-            : 'bg-transparent'
-          }
-        `}
-        role="navigation"
-        aria-label="Main navigation"
-      >
-        <div className="w-full h-full flex items-center justify-between">
+      <nav className={`
+        fixed top-0 left-0 right-0 z-50 transition-all duration-300 
+        px-3 md:px-6 lg:px-8 h-14 md:h-16 lg:h-18
+        ${scrolled ? 'bg-[#141414]/95 backdrop-blur-md border-b border-white/5 shadow-lg' : 'bg-transparent'}
+      `}>
+        <div className="w-full h-full flex items-center justify-between max-w-7xl mx-auto">
           {/* Logo */}
-          <Link
-            href="/"
-            aria-label="THE EDGE WITH JOHN - Political Consultancy - Home"
-            className="shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#020202] rounded"
-            onClick={() => handleNavigate('/')}
+          <Link 
+            href="/" 
+            className="shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 rounded"
+            onClick={closeMenu}
           >
-            <div className="relative w-20 sm:w-25 md:w-30 lg:w-35 h-8 sm:h-10 md:h-12 lg:h-14">
-              <Image
-                src="/logo-final.png"
-                alt="THE EDGE"
-                fill
-                priority
-                className="object-contain"
-                sizes="(max-width: 600px) 80px, (max-width: 768px) 100px, (max-width: 1024px) 120px, (max-width: 1280px) 140px, 160px"
-                quality={100}
-              />
+            <div className="relative w-24 sm:w-28 md:w-32 lg:w-36 h-8 sm:h-10 md:h-11 lg:h-12">
+              <Image src="/logo-final.png" alt="THE EDGE" fill priority className="object-contain" />
             </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden xl:flex items-center gap-3 lg:gap-4 2xl:gap-6 ml-auto">
-            {desktopNavLinks}
-
-            <Link href="/contact" prefetch>
-              <button
-                className="
-                  border-2 border-red-600 px-5 sm:px-6 lg:px-7 py-1.5 sm:py-2 lg:py-2.5 
-                  text-sm sm:text-base lg:text-lg tracking-wider 
-                  text-white font-semibold 
-                  transition-all duration-300 
-                  hover:bg-red-600/10 
-                  shadow-[0_0_25px_rgba(255,0,0,0.3)] hover:shadow-[0_0_50px_rgba(255,0,0,0.5)] 
-                  focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#020202]
-                  whitespace-nowrap relative overflow-hidden group rounded-md
-                "
-                aria-label="Get Started"
-              >
-                <span className="relative z-10 flex items-center gap-2">
-                  Get Started
-                  <span className="inline-block transition-transform duration-300 group-hover:translate-x-1.5">
-                    →
-                  </span>
-                </span>
-                <span className="absolute inset-0 bg-linear-to-r from-red-600/0 via-red-600/5 to-red-600/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              </button>
+          <div className="hidden lg:flex items-center gap-2 xl:gap-4 ml-auto">
+            {NAV_LINKS.map(link => (
+              <NavLinkItem 
+                key={link.name} 
+                link={link} 
+                isActive={isActive(link.href)}
+                onClick={closeMenu}
+              />
+            ))}
+            <Link 
+              href="/contact" 
+              prefetch
+              className="ml-2 border-2 border-red-600 px-5 xl:px-6 py-1.5 xl:py-2 text-sm xl:text-base text-white font-semibold transition-all hover:bg-red-600/10 shadow-[0_0_25px_rgba(255,0,0,0.3)] hover:shadow-[0_0_50px_rgba(255,0,0,0.5)] whitespace-nowrap rounded-md group"
+              onClick={closeMenu}
+            >
+              <span className="flex items-center gap-2">Get Started <span className="transition-transform duration-300 group-hover:translate-x-1">→</span></span>
             </Link>
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Toggle */}
           <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="
-              xl:hidden w-10 h-10 sm:w-11 sm:h-11 
-              rounded-lg bg-[#0a0a0a] border border-red-600/10 
-              flex items-center justify-center 
-              text-zinc-400 hover:text-white hover:border-red-600/30 
-              transition-all duration-300 
-              focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#020202]
-              shrink-0 ml-2
-            "
-            aria-label={isOpen ? 'Close menu' : 'Open menu'}
-            aria-expanded={isOpen}
-            aria-controls="mobile-nav-menu"
+            onClick={() => setIsMobileMenuOpen(open => !open)}
+            className="lg:hidden w-10 h-10 rounded-lg bg-[#0a0a0a] border border-red-600/10 flex items-center justify-center text-zinc-400 hover:text-white transition-all duration-300 ml-2 shrink-0"
+            aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
           >
-            {isOpen ? (
-              <X className="w-5 h-5 sm:w-6 sm:h-6" aria-hidden="true" />
-            ) : (
-              <Menu className="w-5 h-5 sm:w-6 sm:h-6" aria-hidden="true" />
-            )}
+            {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
 
         {/* Mobile Menu */}
         <AnimatePresence mode="wait">
-          {isOpen && (
+          {isMobileMenuOpen && (
             <motion.div
               ref={menuRef}
-              id="mobile-nav-menu"
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.25, ease: 'easeInOut' }}
-              className="
-                xl:hidden overflow-hidden 
-                bg-[#141414]/98 backdrop-blur-lg 
-                border-t border-white/5 
-                mt-0.5 -mx-3 sm:-mx-4 md:-mx-6 lg:-mx-8
-              "
-              role="menu"
-              aria-label="Mobile navigation"
+              variants={mobileMenuVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              className="lg:hidden overflow-hidden bg-[#141414]/98 backdrop-blur-lg border-t border-white/5"
             >
-              <div className="px-4 sm:px-6 md:px-8 py-4 sm:py-5 space-y-1">
-                {mobileNavLinks}
-
-                <div className="pt-4 sm:pt-5 mt-3 sm:mt-4 border-t border-white/5">
+              <div className="px-4 py-4 space-y-1">
+                {NAV_LINKS.map((link) => (
+                  <motion.div
+                    key={link.name}
+                    variants={itemVariants}
+                  >
+                    <NavLinkItem 
+                      link={link} 
+                      isActive={isActive(link.href)} 
+                      isMobile
+                      onClick={closeMenu}
+                    />
+                  </motion.div>
+                ))}
+                <motion.div 
+                  variants={itemVariants}
+                  className="pt-4 mt-3 border-t border-white/5"
+                >
                   <Link 
                     href="/contact" 
-                    className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#020202] rounded-md"
-                    onClick={() => setIsOpen(false)}
+                    className="w-full px-6 py-3.5 border-2 border-red-600 text-white font-semibold text-base transition-all hover:bg-red-600/10 shadow-[0_0_30px_rgba(255,0,0,0.35)] flex items-center justify-center gap-2 rounded-md group"
+                    onClick={closeMenu}
                   >
-                    <button
-                      className="
-                        w-full px-6 py-3.5 sm:py-4 
-                        border-2 border-red-600 
-                        text-white font-semibold text-base sm:text-lg 
-                        transition-all duration-300 
-                        hover:bg-red-600/10 
-                        shadow-[0_0_30px_rgba(255,0,0,0.35)] hover:shadow-[0_0_50px_rgba(255,0,0,0.5)] 
-                        focus:outline-none 
-                        flex items-center justify-center gap-2 rounded-md
-                      "
-                      aria-label="Get Started"
-                    >
-                      Get Started
-                      <span className="inline-block transition-transform duration-300 group-hover:translate-x-1.5">→</span>
-                    </button>
+                    Get Started <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
                   </Link>
-                </div>
+                </motion.div>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
       </nav>
-      {/* Spacer to prevent content from hiding behind navbar */}
-      <div className="h-14 sm:h-16 md:h-18 lg:h-20" />
+      <div className="h-14 md:h-16 lg:h-18" />
     </>
   );
 }

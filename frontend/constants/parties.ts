@@ -1,4 +1,4 @@
-﻿import type { PoliticalParty } from '@/types/parties';
+import type { PoliticalParty } from '@/types/parties';
 
 export const POLITICAL_PARTIES: PoliticalParty[] = [
   {

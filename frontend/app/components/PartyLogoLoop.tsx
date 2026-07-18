@@ -1,52 +1,53 @@
 'use client';
 
-import { memo, useCallback } from 'react';
+import { memo, useMemo } from 'react';
 import LogoLoop from './LogoLoop';
-import LogoItem from './LogoItem';
+import type { LogoItem } from './LogoLoop';
 import type { PoliticalParty } from '@/types/parties';
-import type { LogoItem as LogoLoopItem } from './LogoLoop';
+import LogoItemComponent from './LogoItem';
 
 interface PartyLogoLoopProps {
-  parties: readonly PoliticalParty[] | PoliticalParty[]; // Allow both readonly and mutable
+  parties?: PoliticalParty[]; // ← Made optional
   speed?: number;
-  direction?: 'left' | 'right' | 'up' | 'down';
+  direction?: 'left' | 'right';
   height?: number;
   gap?: number;
   fadeOut?: boolean;
-  fadeOutColor?: string;
+  paddingBottom?: number | string;
   onPartyInteraction?: (partyId: string) => void;
   className?: string;
 }
 
 const PartyLogoLoop = memo(({
-  parties,
-  speed = 80,
+  parties = [], // ← Default empty array
+  speed = 60,
   direction = 'left',
-  height = 60,
-  gap = 40,
-  fadeOut = true,
-  fadeOutColor = '#020202',
+  height = 50,
+  gap = 35,
+  fadeOut = false,
+  paddingBottom = 0,
   onPartyInteraction,
-  className,
+  className = '',
 }: PartyLogoLoopProps) => {
-  const handleInteraction = useCallback((partyId: string) => {
-    onPartyInteraction?.(partyId);
-  }, [onPartyInteraction]);
+  const logoItems: LogoItem[] = useMemo(() => {
+    if (!parties || parties.length === 0) {
+      return [];
+    }
+    return parties.map((party) => ({
+      node: (
+        <LogoItemComponent 
+          key={party.id} 
+          party={party} 
+          onInteraction={onPartyInteraction}
+        />
+      ),
+      href: party.website || undefined,
+      title: party.name,
+      ariaLabel: `${party.name} logo`,
+    }));
+  }, [parties, onPartyInteraction]);
 
-  // Convert PoliticalParty[] to LogoItem[]
-  const logoItems: LogoLoopItem[] = parties.map((party) => ({
-    node: (
-      <LogoItem 
-        party={party} 
-        onInteraction={handleInteraction}
-      />
-    ),
-    href: party.website || undefined,
-    title: party.name,
-    ariaLabel: `${party.name} - ${party.fullName || party.name}`
-  }));
-
-  if (!parties || parties.length === 0) {
+  if (logoItems.length === 0) {
     return null;
   }
 
@@ -57,11 +58,10 @@ const PartyLogoLoop = memo(({
       direction={direction}
       logoHeight={height}
       gap={gap}
-      pauseOnHover={true}
-      scaleOnHover={true}
       fadeOut={fadeOut}
-      fadeOutColor={fadeOutColor}
-      ariaLabel="Political parties logos"
+      fadeOutColor="#020202"
+      scaleOnHover={true}
+      paddingBottom={paddingBottom}
       className={className}
     />
   );

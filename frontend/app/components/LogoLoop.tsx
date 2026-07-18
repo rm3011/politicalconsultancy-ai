@@ -2,8 +2,8 @@
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import './LogoLoop.css';
-// Remove the Image import since we're using standard img tags
 
+// Export the type so it can be imported
 export type LogoItem =
   | {
       node: React.ReactNode;
@@ -39,6 +39,7 @@ export interface LogoLoopProps {
   className?: string;
   style?: React.CSSProperties;
   logoShape?: 'circle' | 'square' | 'rounded';
+  paddingBottom?: number | string;
 }
 
 const ANIMATION_CONFIG = {
@@ -75,7 +76,6 @@ const useResizeObserver = (
     return () => {
       observers.forEach(observer => observer?.disconnect());
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [callback, elements, ...deps]);
 };
 
@@ -116,7 +116,6 @@ const useImageLoader = (
         img.removeEventListener('error', handleImageLoad);
       });
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [seqRef, onLoad, ...deps]);
 };
 
@@ -203,7 +202,8 @@ export const LogoLoop = React.memo<LogoLoopProps>(({
   ariaLabel = 'Partner logos',
   className,
   style,
-  logoShape = 'circle'
+  logoShape = 'circle',
+  paddingBottom = 0
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -274,9 +274,10 @@ export const LogoLoop = React.memo<LogoLoopProps>(({
         '--logoloop-gap': `${gap}px`,
         '--logoloop-logoHeight': `${logoHeight}px`,
         '--logoloop-shape': logoShape === 'circle' ? '50%' : logoShape === 'rounded' ? '12px' : '0',
+        '--logoloop-paddingBottom': typeof paddingBottom === 'number' ? `${paddingBottom}px` : paddingBottom,
         ...(fadeOutColor && { '--logoloop-fadeColor': fadeOutColor })
       }) as React.CSSProperties,
-    [gap, logoHeight, fadeOutColor, logoShape]
+    [gap, logoHeight, fadeOutColor, logoShape, paddingBottom]
   );
 
   const rootClassName = useMemo(
@@ -384,6 +385,7 @@ export const LogoLoop = React.memo<LogoLoopProps>(({
           ? undefined
           : toCssLength(width)
         : (toCssLength(width) ?? '100%'),
+      paddingBottom: `var(--logoloop-paddingBottom, 0)`,
       ...cssVariables,
       ...style
     }),
