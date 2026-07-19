@@ -85,7 +85,7 @@ export default function Footer() {
             <Link href="/" className="inline-block mb-4">
               <div className="flex items-center gap-3">
                 <div className="w-30 h-12 rounded-xxl bg-transparent flex items-center justify-center shadow-red-500/20">
-                  <img src="/logo-final.png" alt="THE EDGE WITH JOHN" className="h-12 w-auto" />
+                  <img src="/icon.png" alt="THE EDGE WITH JOHN" className="h-12 w-auto" />
                 </div>
               </div>
             </Link>

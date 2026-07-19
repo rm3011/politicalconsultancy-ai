@@ -230,7 +230,7 @@ export default function Navbar() {
             onClick={closeMenu}
           >
             <div className="relative w-24 sm:w-28 md:w-32 lg:w-36 h-8 sm:h-10 md:h-11 lg:h-12">
-              <Image src="/logo-final.png" alt="THE EDGE" fill priority className="object-contain" />
+              <Image src="/icon.png" alt="THE EDGE" fill priority className="object-contain" />
             </div>
           </Link>
 
