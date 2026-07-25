@@ -8,7 +8,7 @@ const STATS_DATA = [
   {
     label: 'Campaigns Won',
     image:
-      'https://d3i6fh83elv35t.cloudfront.net/static/2024/06/2024-06-04T145340Z_337282965_RC2E48AQ1GUP_RTRMADP_3_INDIA-ELECTION-MODI-1024x683.jpg',
+      'https://images.indianexpress.com/2026/03/vijay-image-for-rally-copy.jpg',
     alt: 'Campaign success rate chart',
   },
   {
@@ -20,7 +20,7 @@ const STATS_DATA = [
   {
     label: 'Success Rate',
     image:
-      'https://cdn.magzter.com/1574404609/1704925421/articles/dNvNVvzsz85dRta3ERjsys/STALIN-LAUNCHES-DISTRIBUTION-OF-PONGAL-GIFT-TO-RICECARD-HOLDERS.jpg',
+      'https://www.poojn.in/wp-content/uploads/2025/04/Power-and-Politics-in-Tamil-Nadu-A-Critical-Analysis.jpeg.jpg',
     alt: 'Client satisfaction metrics',
   },
   {

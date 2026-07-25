@@ -37,7 +37,7 @@ const services = [
     tag: 'Strategic',
     gradient: 'from-red-500/20 to-pink-500/20',
     iconGradient: 'from-red-500 to-pink-500',
-    image: 'https://images.mid-day.com/images/images/2026/mar/stalin-campaign-PTI-TN-news-news.jpg'
+    image: 'https://assets.thehansindia.com/h-upload/2025/09/30/1589227-vijay.jpg'
   },
   {
     icon: BarChart3,

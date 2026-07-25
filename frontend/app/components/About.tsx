@@ -22,17 +22,17 @@ interface StackItem {
 // Constants
 const STACK_ITEMS: readonly StackItem[] = [
   {
-    src: 'https://thecommunemag.com/wp-content/uploads/2026/01/2026-Tamil-Nadu-Assembly-Election-Poll-Matrix-Survey-Shows-DMK-Is-Weak-NDA-Well-Placed-to-Gain-2048x1152.jpg',
+    src: 'https://www.deccanchronicle.com/h-upload/2024/09/28/1846314-protest.jpg',
     label: 'Strategy',
     icon: Target,
   },
   {
-    src: 'https://assets.thehansindia.com/h-upload/2024/03/27/1433948-tamilnadu.webp',
+    src: 'https://www.financialexpress.com/wp-content/uploads/2021/03/ntk.jpg?w=1024',
     label: 'Data',
     icon: BarChart3,
   },
   {
-    src: 'https://tse1.mm.bing.net/th/id/OIP.n6aa6Hjs2XUVXbGOwXtr8AAAAA?r=0&rs=1&pid=ImgDetMain&o=7&rm=3',
+    src: 'https://fl-i.thgim.com/public/incoming/vurbbj/article69435515.ece/alternates/LANDSCAPE_1200/%20S.%20Ramadoss%20and%20Anbumani%20Ramadoss',
     label: 'Happiness',
     icon: Users,
   },
@@ -42,7 +42,7 @@ const STACK_ITEMS: readonly StackItem[] = [
     icon: Users,
   },
   {
-    src: 'https://claritycircuit.com/wp-content/uploads/2024/07/Impact-of-social-media-on-political-campaigns-in-India-2-768x432.jpg',
+    src: 'https://wallpaperaccess.com/full/10956148.jpg',
     label: 'Impact',
     icon: Users,
   },
@@ -334,7 +334,7 @@ export default function About() {
             <div className="relative w-full mx-auto overflow-hidden group">
               <div className="relative" style={{ aspectRatio: '3/4' }}>
                 <Image
-                  src="/about/owner-2.png"
+                  src="/about/owner-3.png"
                   alt="Founder and CEO of NEVAS Political Consultancy"
                   fill
                   priority
