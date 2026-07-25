@@ -321,20 +321,20 @@ export default function About() {
       </h2>
 
       <div className="mx-auto max-w-7xl px-4 sm:px-8 relative z-10">
-        {/* ROW 1 - About Section with Image at TOP */}
-        <div className="grid lg:grid-cols-[420px_1fr] gap-8 md:gap-12 items-start">
-          {/* LEFT: Owner Image - AT TOP with natural height */}
+        {/* ROW 1 - About Section - Stacked on mobile, Side by side on desktop */}
+        <div className="grid grid-cols-1 lg:grid-cols-[420px_1fr] gap-8 md:gap-12 items-start">
+          {/* LEFT: Owner Image - Full width on mobile, sticky on desktop */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            className="lg:sticky lg:top-24"
+            className="lg:sticky lg:top-24 w-full max-w-[320px] mx-auto lg:max-w-none"
           >
             <div className="relative w-full mx-auto overflow-hidden group">
               <div className="relative" style={{ aspectRatio: '3/4' }}>
                 <Image
-                  src="/about/owner-3.png"
+                  src="/about/owner-last.png"
                   alt="Founder and CEO of NEVAS Political Consultancy"
                   fill
                   priority
@@ -356,8 +356,8 @@ export default function About() {
             </div>
           </motion.div>
 
-          {/* RIGHT: Content */}
-          <div className="space-y-8">
+          {/* RIGHT: Content - Full width on mobile */}
+          <div className="space-y-8 w-full">
             <div className="inline-flex items-center gap-3 px-4 py-2.5 rounded-full border border-red-500/20 bg-[#020202]/40 backdrop-blur-sm neuomorphic-flat">
               <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" aria-hidden="true" />
               <span className="text-[10px] text-red-500 font-medium tracking-[0.2em] uppercase">
@@ -429,7 +429,7 @@ export default function About() {
           </motion.div>
         </div>
 
-        {/* Political Partners - with reduced bottom padding */}
+        {/* Political Partners */}
         <div className="mt-16 md:mt-20">
           <PartyLogoLoop
             parties={partiesArray}
