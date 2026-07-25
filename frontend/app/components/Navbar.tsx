@@ -196,7 +196,7 @@ export default function Navbar() {
       <nav
         className={`
           fixed top-0 left-0 right-0 z-50 transition-all duration-300 
-          px-3 md:px-6 lg:px-8 h-14 md:h-16 lg:h-18
+          px-3 md:px-6 lg:px-8 h-[80px] md:h-20 lg:h-24
           ${
             scrolled
               ? 'bg-[#141414]/95 backdrop-blur-md border-b border-white/5 shadow-lg'
@@ -210,7 +210,7 @@ export default function Navbar() {
             className="shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 rounded"
             onClick={closeMenu}
           >
-            <div className="relative w-24 sm:w-28 md:w-32 lg:w-36 h-8 sm:h-10 md:h-11 lg:h-12">
+            <div className="relative w-[120px] sm:w-32 md:w-36 lg:w-44 h-[72px] sm:h-12 md:h-14 lg:h-16">
               <Image
                 src="/icon.png"
                 alt="THE EDGE"
@@ -296,7 +296,8 @@ export default function Navbar() {
           )}
         </AnimatePresence>
       </nav>
-      <div className="h-14 md:h-16 lg:h-18" />
+      {/* Spacer matches new navbar height */}
+      <div className="h-[72px] md:h-20 lg:h-24" />
     </>
   );
 }
