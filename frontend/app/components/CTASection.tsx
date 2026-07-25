@@ -133,20 +133,22 @@ export default function CTASection() {
                     objectPosition: 'right center',
                   }}
                   priority
+                  quality={100}
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 relative z-10">
-              {/* Mobile Image - Order: First on mobile (above form) */}
-              <div className="lg:hidden order-1 w-full max-w-[220px] mx-auto pt-6 pb-2">
+              {/* Mobile Image - Using SAME image as desktop */}
+              <div className="lg:hidden order-1 relative w-full max-w-[280px] h-[350px] mx-auto pt-6 pb-2">
                 <Image
-                  src="/cta/owner.png"
+                  src="/cta/owner-real.png"
                   alt="NEVAS Political Consultancy Team"
-                  width={220}
-                  height={280}
+                  fill
                   className="object-contain"
                   priority
+                  quality={100}
+                  sizes="(max-width: 768px) 280px, 100vw"
                 />
               </div>
 
@@ -338,4 +340,4 @@ export default function CTASection() {
       </div>
     </section>
   );
-} 
+}
