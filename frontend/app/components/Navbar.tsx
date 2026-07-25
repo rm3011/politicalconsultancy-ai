@@ -235,7 +235,7 @@ export default function Navbar() {
               className="ml-2 border-2 border-red-600 px-5 xl:px-6 py-1.5 xl:py-2 text-sm xl:text-base text-white font-semibold transition-all hover:bg-red-600/10 shadow-[0_0_25px_rgba(255,0,0,0.3)] hover:shadow-[0_0_50px_rgba(255,0,0,0.5)] whitespace-nowrap rounded-md group cursor-pointer"
             >
               <span className="flex items-center gap-2">
-                Get Started{' '}
+                SCHEDULE A CALL{' '}
                 <span className="transition-transform duration-300 group-hover:translate-x-1">
                   →
                 </span>
@@ -285,7 +285,7 @@ export default function Navbar() {
                     }}
                     className="w-full px-6 py-3.5 border-2 border-red-600 text-white font-semibold text-base transition-all hover:bg-red-600/10 shadow-[0_0_30px_rgba(255,0,0,0.35)] flex items-center justify-center gap-2 rounded-md group cursor-pointer"
                   >
-                    Get Started{' '}
+                    SCHEDULE A CALL{' '}
                     <span className="transition-transform duration-300 group-hover:translate-x-1">
                       →
                     </span>

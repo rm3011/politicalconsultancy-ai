@@ -37,9 +37,14 @@ const ctaVariants: Variants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.45, delay: 0.45 } },
 };
 
-// Typography clamp helper
-const headingClamp = (mobile: string, tablet: string, desktop: string) =>
-  `clamp(${mobile}) sm:clamp(${tablet}) lg:clamp(${desktop})`;
+const dividerVariants: Variants = {
+  hidden: { opacity: 0, scaleX: 0 },
+  visible: {
+    opacity: 1,
+    scaleX: 1,
+    transition: { duration: 0.8, delay: 0.25, ease: [0.25, 0.1, 0.25, 1] },
+  },
+};
 
 const HeroTitle = memo(() => (
   <motion.div variants={titleVariants} initial="hidden" animate="visible" className="text-left">
@@ -60,14 +65,28 @@ const HeroTitle = memo(() => (
 ));
 HeroTitle.displayName = 'HeroTitle';
 
+// Aesthetic Dividing Line Component
+const DividerLine = memo(() => (
+  <motion.div
+    variants={dividerVariants}
+    initial="hidden"
+    animate="visible"
+    className="w-16 sm:w-20 md:w-24 h-[2px] bg-gradient-to-r from-red-500 via-red-400 to-transparent my-1 sm:my-2"
+    style={{
+      boxShadow: '0 0 20px rgba(220,38,38,0.3), 0 0 60px rgba(220,38,38,0.1)',
+    }}
+  />
+));
+DividerLine.displayName = 'DividerLine';
+
 const ScrollIndicator = memo(() => (
   <motion.div
     variants={scrollIndicatorVariants}
     initial="hidden"
     animate="visible"
-    className="mt-4 sm:mt-8 md:mt-10 lg:mt-14 text-left"
+    className="mt-2 sm:mt-4 md:mt-6 lg:mt-8 text-left"
   >
-    <p className="mb-2 md:mb-3 lg:mb-4 text-[8px] sm:text-[9px] md:text-[10px] lg:text-xs uppercase tracking-[0.25em] sm:tracking-[0.3em] md:tracking-[0.35em] lg:tracking-[0.45em] text-[#8d8d8d] font-medium">
+    <p className="mb-1 md:mb-2 lg:mb-3 text-[8px] sm:text-[9px] md:text-[10px] lg:text-xs uppercase tracking-[0.25em] sm:tracking-[0.3em] md:tracking-[0.35em] lg:tracking-[0.45em] text-[#8d8d8d] font-medium">
       Scroll To Discover
     </p>
     <div className="flex items-center gap-3 md:gap-4 lg:gap-5">
@@ -91,38 +110,39 @@ const CTAButton = memo(() => {
   };
 
   return (
-    <motion.div variants={ctaVariants} initial="hidden" animate="visible" className="mt-3 sm:mt-6 md:mt-7 flex justify-start">
+    <motion.div variants={ctaVariants} initial="hidden" animate="visible" className="mt-1 sm:mt-3 md:mt-4 flex justify-start">
       <button
         onClick={scrollToCTA}
         className="group relative inline-flex items-center gap-2 sm:gap-2.5 md:gap-3
-          border border-red-600/30 bg-transparent
-          px-4 xs:px-5 sm:px-7 md:px-8 lg:px-9 xl:px-10
-          py-2.5 xs:py-3 sm:py-3.5 md:py-4 lg:py-4.5 xl:py-5
+          border-2 border-red-500/50 bg-red-600/10 backdrop-blur-sm
+          px-5 xs:px-6 sm:px-8 md:px-10 lg:px-12 xl:px-14
+          py-3 xs:py-3.5 sm:py-4 md:py-4.5 lg:py-5 xl:py-5.5
           uppercase tracking-[0.12em] xs:tracking-[0.15em] sm:tracking-[0.18em] md:tracking-[0.2em]
-          text-[9px] xs:text-[10px] sm:text-[11px] md:text-[12px] lg:text-[13px] xl:text-[14px]
-          font-semibold transition-all duration-700
-          hover:border-red-600/60 hover:bg-red-600/5 hover:shadow-[0_0_60px_rgba(220,38,38,0.25)]
-          focus:outline-none focus:ring-2 focus:ring-red-500/30
+          text-[10px] xs:text-[11px] sm:text-[12px] md:text-[13px] lg:text-[14px] xl:text-[15px]
+          font-bold transition-all duration-700
+          hover:border-red-400/70 hover:bg-red-600/20 
+          hover:shadow-[0_0_80px_rgba(220,38,38,0.35)] 
+          focus:outline-none focus:ring-2 focus:ring-red-500/40
           overflow-hidden rounded-md cursor-pointer"
       >
         <span
-          className="absolute inset-0 bg-gradient-to-r from-transparent via-red-500/15 to-transparent animate-flow-smooth"
+          className="absolute inset-0 bg-gradient-to-r from-transparent via-red-500/20 to-transparent animate-flow-smooth"
           style={{ backgroundSize: '300% 100%', backgroundPosition: '-100% 0%' }}
         />
         <span
-          className="absolute inset-0 bg-gradient-to-r from-transparent via-red-400/30 to-transparent
+          className="absolute inset-0 bg-gradient-to-r from-transparent via-red-400/40 to-transparent
             -translate-x-[200%] group-hover:translate-x-[200%] transition-transform duration-[3000ms] ease-[cubic-bezier(0.25,0.1,0.25,1)]"
-          style={{ width: '300%', background: 'linear-gradient(90deg, transparent, rgba(220,38,38,0.25), transparent)' }}
+          style={{ width: '300%', background: 'linear-gradient(90deg, transparent, rgba(220,38,38,0.35), transparent)' }}
         />
         <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-1000">
-          <span className="absolute -inset-px bg-gradient-to-r from-red-500/20 via-red-400/30 to-red-500/20 blur-md" />
+          <span className="absolute -inset-px bg-gradient-to-r from-red-500/30 via-red-400/40 to-red-500/30 blur-md" />
         </span>
-        <span className="relative z-10 flex items-center gap-2 sm:gap-3 text-white/90 group-hover:text-white transition-colors duration-700">
-          <span className="relative font-medium tracking-wider">
-            EXPLORE THE HUB
-            <span className="absolute -bottom-0.5 left-0 w-0 h-[1.5px] bg-gradient-to-r from-red-400 to-red-500 group-hover:w-full transition-all duration-1000 ease-[cubic-bezier(0.25,0.1,0.25,1)]" />
+        <span className="relative z-10 flex items-center gap-2 sm:gap-3 text-white group-hover:text-white transition-colors duration-700">
+          <span className="relative font-bold tracking-wider text-shadow-[0_0_30px_rgba(220,38,38,0.3)]">
+            SCHEDULE A CALL
+            <span className="absolute -bottom-0.5 left-0 w-0 h-[2px] bg-gradient-to-r from-red-400 to-red-500 group-hover:w-full transition-all duration-1000 ease-[cubic-bezier(0.25,0.1,0.25,1)]" />
           </span>
-          <ArrowRight className="w-3 h-3 xs:w-3.5 xs:h-3.5 sm:w-4 sm:h-4 md:w-4.5 md:h-4.5 transition-all duration-700 group-hover:translate-x-2 group-hover:text-red-400 group-hover:scale-110" />
+          <ArrowRight className="w-3.5 h-3.5 xs:w-4 xs:h-4 sm:w-4.5 sm:h-4.5 md:w-5 md:h-5 transition-all duration-700 group-hover:translate-x-2 group-hover:text-red-400 group-hover:scale-110" />
         </span>
       </button>
     </motion.div>
@@ -210,10 +230,10 @@ const Hero = memo(({ className = '' }: HeroProps) => {
         <div className="w-[200px] h-[200px] sm:w-[280px] sm:h-[280px] md:w-[380px] md:h-[380px] rounded-full bg-red-600/15 blur-[150px] animate-pulse" style={{ animationDuration: '4s' }} />
       </div>
 
-      {/* Content */}
-      <div className="relative z-20 flex items-center min-h-[calc(100vh-56px)] pb-2 sm:pb-10 md:pb-14">
+      {/* Content - Zero bottom padding */}
+      <div className="relative z-20 flex items-center min-h-[calc(100vh-56px)] pb-0">
         <div className="flex w-full max-w-[92%] xs:max-w-[94%] sm:max-w-100 md:max-w-125 lg:max-w-150 xl:max-w-160 flex-col justify-center px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16">
-          <motion.div variants={badgeVariants} initial="hidden" animate="visible" className="mb-1 sm:mb-4 flex items-center gap-2 sm:gap-3">
+          <motion.div variants={badgeVariants} initial="hidden" animate="visible" className="mb-1 sm:mb-2 flex items-center gap-2 sm:gap-3">
             <div className="h-px w-5 sm:w-6 md:w-8 bg-red-600 shadow-[0_0_20px_rgba(255,0,0,0.5)]" aria-hidden="true" />
             <span className="text-[7px] xs:text-[8px] sm:text-[9px] md:text-[10px] lg:text-[11px] xl:text-[12px] uppercase tracking-[0.15em] xs:tracking-[0.2em] sm:tracking-[0.24em] md:tracking-[0.28em] text-neutral-400 font-medium whitespace-nowrap">
               <span className="text-red-500">DATA BACKED.</span> IMPACT FOCUSED.
@@ -222,7 +242,10 @@ const Hero = memo(({ className = '' }: HeroProps) => {
 
           <HeroTitle />
 
-          <motion.div variants={descriptionVariants} initial="hidden" animate="visible" className="mt-1 sm:mt-5 border-l-2 border-red-500 pl-3 sm:pl-4 md:pl-5 text-left">
+          {/* Aesthetic Dividing Line */}
+          <DividerLine />
+
+          <motion.div variants={descriptionVariants} initial="hidden" animate="visible" className="mt-0.5 sm:mt-2 border-l-2 border-red-500 pl-3 sm:pl-4 md:pl-5 text-left">
             <p className="text-[11px] xs:text-[12px] sm:text-[13px] md:text-[14px] lg:text-[15px] xl:text-[16px] leading-[1.6] sm:leading-[1.7] md:leading-[1.8] lg:leading-[1.9] font-normal text-neutral-400">
               Strategic intelligence.<br />Real insights.<br />Stronger campaigns.<br />Lasting impact.
             </p>
