@@ -7,11 +7,8 @@ import {
   Brain, 
   Users, 
   TrendingUp, 
-  Shield, 
   BarChart3, 
-  MessageSquare,
   ArrowRight,
-  Sparkles
 } from 'lucide-react';
 
 const services = [
@@ -22,7 +19,7 @@ const services = [
     tag: 'Real-Time',
     gradient: 'from-red-500/20 to-rose-500/20',
     iconGradient: 'from-red-500 to-rose-500',
-    image: 'https://media.istockphoto.com/id/2210009198/vector/sentiment-analysis-infographic-3-point-with-vertical-half-circle-with-outline-circle-and.jpg?s=1024x1024&w=is&k=20&c=SS2Iz5737mHczIlgYRGuXfCfMfEuWuoA5cDHtFqxdmo='
+    image: 'https://cf-images.assettype.com/thequint/2026-05-11/8wuvm5jg/south-India-politicians.jpg?auto=format%2Ccompress&fmt=webp&width=720'
   },
   {
     icon: Users,
@@ -31,7 +28,7 @@ const services = [
     tag: 'Data-Driven',
     gradient: 'from-red-500/20 to-orange-500/20',
     iconGradient: 'from-red-500 to-orange-500',
-    image: 'https://tse3.mm.bing.net/th/id/OIP.l1dtk9B4WS_NB5I8j_iYfgEsCc?r=0&rs=1&pid=ImgDetMain&o=7&rm=3'
+    image: 'https://english.cdn.zeenews.com/sites/default/files/2025/03/07/1692063-voters-tamil-nadu-pti.jpg'
   },
   {
     icon: TrendingUp,
@@ -40,7 +37,7 @@ const services = [
     tag: 'Strategic',
     gradient: 'from-red-500/20 to-pink-500/20',
     iconGradient: 'from-red-500 to-pink-500',
-    image: 'https://tse2.mm.bing.net/th/id/OIP.EPZiHqVjYOfPoJafPne4sAHaEK?r=0&rs=1&pid=ImgDetMain&o=7&rm=3'
+    image: 'https://images.mid-day.com/images/images/2026/mar/stalin-campaign-PTI-TN-news-news.jpg'
   },
   {
     icon: BarChart3,
@@ -49,7 +46,7 @@ const services = [
     tag: 'Predictive',
     gradient: 'from-red-500/20 to-purple-500/20',
     iconGradient: 'from-red-500 to-purple-500',
-    image: 'https://preview.redd.it/eus43zbx67261.png?auto=webp&s=711451eea788d20f600cce8aae361de0744b3ba5'
+    image: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663184702328/4kNQvwwS2XFFrPSHwasfgs/blog-ai-political-intel-hero-XvuRcheH6xBukg8BVfqDE4.webp'
   },
 ];
 
@@ -112,7 +109,7 @@ export default function Services() {
             >
               {/* Image Side */}
               <div className="w-full lg:w-1/2 relative">
-                <div className="relative overflow-hidden rounded-2xl aspect-[4/3] border border-red-500/10 group-hover:border-red-500/30 transition-all duration-500 bg-[#0a0a0a] neuomorphic-card-hover">
+                <div className="relative overflow-hidden rounded-2xl aspect-4/3 border border-red-500/10 group-hover:border-red-500/30 transition-all duration-500 bg-[#0a0a0a] neuomorphic-card-hover">
                   
                   {/* Image */}
                   <Image

@@ -29,7 +29,8 @@ export const metadata: Metadata = {
     template: '%s | The Edge With John - Political Consultancy',
     default: 'The Edge With John - Political Consultancy',
   },
-  description: 'Data-driven political consultancy leveraging AI, predictive analytics, and strategic intelligence. Transform your political campaign with The Edge With John.',
+  description:
+    'Data-driven political consultancy leveraging AI, predictive analytics, and strategic intelligence. Transform your political campaign with The Edge With John.',
   keywords: [
     'political consultancy',
     'political strategy',
@@ -60,7 +61,8 @@ export const metadata: Metadata = {
     url: 'https://theedgewithjohn.com',
     siteName: 'The Edge With John',
     title: 'The Edge With John - AI-Powered Political Consultancy',
-    description: 'Data-driven political consultancy leveraging AI, predictive analytics, and strategic intelligence. Transform your political campaign.',
+    description:
+      'Data-driven political consultancy leveraging AI, predictive analytics, and strategic intelligence. Transform your political campaign.',
     images: [
       {
         url: '/logo-final.png',
@@ -75,7 +77,8 @@ export const metadata: Metadata = {
     site: '@theedgewithjohn',
     creator: '@theedgewithjohn',
     title: 'The Edge With John - AI-Powered Political Consultancy',
-    description: 'Data-driven political consultancy leveraging AI, predictive analytics, and strategic intelligence.',
+    description:
+      'Data-driven political consultancy leveraging AI, predictive analytics, and strategic intelligence.',
     images: ['/og-image.png'],
   },
   alternates: {
@@ -83,13 +86,8 @@ export const metadata: Metadata = {
   },
   category: 'Politics',
   icons: {
-    icon: [
-      { url: '/favicon.ico' },
-      { url: '/icon.png', type: 'image/png' },
-    ],
-    apple: [
-      { url: '/apple-touch-icon.png' },
-    ],
+    icon: [{ url: '/favicon.ico' }, { url: '/icon.png', type: 'image/png' }],
+    apple: [{ url: '/apple-touch-icon.png' }],
     shortcut: ['/favicon.ico'],
   },
   manifest: '/site.webmanifest',
@@ -105,21 +103,18 @@ export const viewport: Viewport = {
   themeColor: '#b89168',
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable} ${anton.variable}`}>
+    <html
+      lang="en"
+      className={`${inter.variable} ${playfair.variable} ${anton.variable}`}
+    >
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="icon" href="/logo.png" type="image/png" sizes="32x32" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <link rel="manifest" href="/site.webmanifest" />
         <meta name="msapplication-TileColor" content="#b89168" />
-        <meta name="google-site-verification" content="your-google-verification-code" />
+        <meta
+          name="google-site-verification"
+          content="your-google-verification-code"
+        />
         <meta name="geo.region" content="IN" />
         <meta name="geo.placename" content="India" />
         <meta name="geo.position" content="20.5937;78.9629" />
@@ -149,9 +144,17 @@ export default function RootLayout({
         />
       </head>
 
-      <body className={`${inter.className} bg-[#050505] text-white antialiased`}>
+      <body
+        className={`${inter.className} bg-[#050505] text-white antialiased`}
+      >
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-red-600 focus:text-white focus:rounded-lg"
+        >
+          Skip to main content
+        </a>
         <Navbar />
-        <main>{children}</main>
+        <main id="main-content">{children}</main>
         <Footer />
       </body>
     </html>

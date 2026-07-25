@@ -2,14 +2,12 @@
 
 import { memo, useCallback, useMemo, useState, useEffect } from 'react';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
-import { 
-  Users, TrendingUp, Target, BarChart3, Award, 
-  ChevronDown, Quote, CheckCircle
-} from 'lucide-react';
-import PartyLogoLoop from "./PartyLogoLoop";
-import POLITICAL_PARTIES from "../../constants/parties";
+import { motion, type Variants } from 'framer-motion';
+import { Users, Target, BarChart3, ChevronDown, Quote, CheckCircle } from 'lucide-react';
+import PartyLogoLoop from './PartyLogoLoop';
+import POLITICAL_PARTIES from '../../constants/parties';
 import type { PoliticalParty } from '@/types/parties';
+
 // Constants
 const IMAGE_QUALITY = 85;
 const ANIMATION_DELAY_BASE = 0.1;
@@ -23,11 +21,31 @@ interface StackItem {
 
 // Constants
 const STACK_ITEMS: readonly StackItem[] = [
-  { src: 'https://imgnew.outlookindia.com/uploadimage/library/16_9/16_9_5/IMAGE_1660797062.webp', label: 'Strategy', icon: Target },
-  { src: 'https://static.independent.co.uk/s3fs-public/thumbnails/image/2014/05/16/19/india-graphic.jpg?quality=75&width=640&auto=webp', label: 'Data', icon: BarChart3 },
-  { src: 'https://tse4.mm.bing.net/th/id/OIP.MHWOp4eQp_zncpvgf11wxAHaEK?r=0&rs=1&pid=ImgDetMain&o=7&rm=3', label: 'Happiness', icon: TrendingUp },
-  { src: 'https://tse4.mm.bing.net/th/id/OIP.bw7OZRPVzYdISgoEWN0rHwAAAA?r=0&w=474&h=266&rs=1&pid=ImgDetMain&o=7&rm=3', label: 'Action', icon: Users },
-  { src: 'https://claritycircuit.com/wp-content/uploads/2024/07/Impact-of-social-media-on-political-campaigns-in-India-2-768x432.jpg', label: 'Impact', icon: Award },
+  {
+    src: 'https://thecommunemag.com/wp-content/uploads/2026/01/2026-Tamil-Nadu-Assembly-Election-Poll-Matrix-Survey-Shows-DMK-Is-Weak-NDA-Well-Placed-to-Gain-2048x1152.jpg',
+    label: 'Strategy',
+    icon: Target,
+  },
+  {
+    src: 'https://assets.thehansindia.com/h-upload/2024/03/27/1433948-tamilnadu.webp',
+    label: 'Data',
+    icon: BarChart3,
+  },
+  {
+    src: 'https://tse1.mm.bing.net/th/id/OIP.n6aa6Hjs2XUVXbGOwXtr8AAAAA?r=0&rs=1&pid=ImgDetMain&o=7&rm=3',
+    label: 'Happiness',
+    icon: Users,
+  },
+  {
+    src: 'https://imagesvs.oneindia.com/te/img/2026/05/vijay-1777824469.jpg',
+    label: 'Action',
+    icon: Users,
+  },
+  {
+    src: 'https://claritycircuit.com/wp-content/uploads/2024/07/Impact-of-social-media-on-political-campaigns-in-India-2-768x432.jpg',
+    label: 'Impact',
+    icon: Users,
+  },
 ] as const;
 
 const EXPERTISE_ITEMS = [
@@ -39,71 +57,90 @@ const EXPERTISE_ITEMS = [
   'Crisis Communication Management',
 ] as const;
 
-const BLUR_DATA_URL = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAABAAEDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eXh6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD3+iiigD//2Q==";
+const BLUR_DATA_URL =
+  'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAABAAEDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eXh6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD3+iiigD//2Q==';
+
+// Image Card Animation Variants
+const imageCardVariants: Variants = {
+  hidden: { opacity: 0, scale: 0.95 },
+  visible: { opacity: 1, scale: 1 },
+};
 
 // ============================================================
 // IMAGE CARD COMPONENT
 // ============================================================
-const ImageCard = memo(({ item, index, height, onInteraction }: {
-  item: StackItem;
-  index: number;
-  height: string;
-  onInteraction?: (label: string) => void;
-}) => {
-  const Icon = item.icon;
-  
-  const handleClick = useCallback(() => {
-    onInteraction?.(item.label);
-  }, [item.label, onInteraction]);
+const ImageCard = memo(
+  ({
+    item,
+    index,
+    height,
+    onInteraction,
+  }: {
+    item: StackItem;
+    index: number;
+    height: string;
+    onInteraction?: (label: string) => void;
+  }) => {
+    const Icon = item.icon;
 
-  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
+    const handleClick = useCallback(() => {
       onInteraction?.(item.label);
-    }
-  }, [item.label, onInteraction]);
+    }, [item.label, onInteraction]);
 
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.5, delay: index * ANIMATION_DELAY_BASE }}
-      viewport={{ once: true, margin: "0px 0px -50px 0px" }}
-      className={`relative ${height} rounded-lg overflow-hidden group cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-[#020202] neuomorphic-card-hover`}
-      role="listitem"
-      tabIndex={0}
-      onClick={handleClick}
-      onKeyDown={handleKeyDown}
-    >
-      <Image
-        src={item.src}
-        alt={`${item.label} - NEVAS political consultancy capability`}
-        fill
-        quality={IMAGE_QUALITY}
-        placeholder="blur"
-        blurDataURL={BLUR_DATA_URL}
-        sizes="(max-width: 768px) 50vw, 33vw"
-        className="object-cover transition-transform duration-700 group-hover:scale-110"
-        loading="lazy"
-        onError={(e) => { e.currentTarget.style.display = 'none'; }}
-      />
-      
-      <div className="absolute inset-0 bg-linear-to-t from-[#020202]/90 via-[#020202]/30 to-transparent" />
-      
-      <div className="absolute bottom-3 left-3 flex items-center gap-2">
-        <div className="neuomorphic-icon w-6 h-6 rounded-md bg-[#020202]/80 border border-red-500/10 flex items-center justify-center">
-          <Icon className="w-3 h-3 text-red-500" aria-hidden="true" />
+    const handleKeyDown = useCallback(
+      (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onInteraction?.(item.label);
+        }
+      },
+      [item.label, onInteraction]
+    );
+
+    return (
+      <motion.div
+        variants={imageCardVariants}
+        initial="hidden"
+        whileInView="visible"
+        transition={{ duration: 0.5, delay: index * ANIMATION_DELAY_BASE }}
+        viewport={{ once: true, margin: '0px 0px -50px 0px' }}
+        className={`relative ${height} rounded-lg overflow-hidden group cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-[#020202] neuomorphic-card-hover`}
+        role="listitem"
+        tabIndex={0}
+        onClick={handleClick}
+        onKeyDown={handleKeyDown}
+      >
+        <Image
+          src={item.src}
+          alt={`${item.label} - NEVAS political consultancy capability`}
+          fill
+          quality={IMAGE_QUALITY}
+          placeholder="blur"
+          blurDataURL={BLUR_DATA_URL}
+          sizes="(max-width: 768px) 50vw, 33vw"
+          className="object-cover transition-transform duration-700 group-hover:scale-110"
+          loading="lazy"
+          onError={(e) => {
+            e.currentTarget.style.display = 'none';
+          }}
+        />
+
+        <div className="absolute inset-0 bg-linear-to-t from-[#020202]/90 via-[#020202]/30 to-transparent" />
+
+        <div className="absolute bottom-3 left-3 flex items-center gap-2">
+          <div className="neuomorphic-icon w-6 h-6 rounded-md bg-[#020202]/80 border border-red-500/10 flex items-center justify-center">
+            <Icon className="w-3 h-3 text-red-500" aria-hidden="true" />
+          </div>
+          <span className="text-[10px] tracking-[0.2em] uppercase text-zinc-400 font-semibold">
+            {item.label}
+          </span>
         </div>
-        <span className="text-[10px] tracking-[0.2em] uppercase text-zinc-400 font-semibold">
-          {item.label}
-        </span>
-      </div>
-      
-      <div className="absolute inset-0 border border-transparent group-hover:border-red-500/20 rounded-lg transition-all duration-300" />
-    </motion.div>
-  );
-});
 
+        <div className="absolute inset-0 border border-transparent group-hover:border-red-500/20 rounded-lg transition-all duration-300" />
+      </motion.div>
+    );
+  }
+);
 ImageCard.displayName = 'ImageCard';
 
 // ============================================================
@@ -119,16 +156,14 @@ const ScrollablePanel = memo(({ children }: { children: React.ReactNode }) => {
 
   return (
     <div className="relative">
-      <div 
-        className="h-[380px] md:h-[420px] lg:h-[460px] overflow-y-auto pr-3 neuomorphic-scroll"
+      <div
+        className="h-95 md:h-105 lg:h-115 overflow-y-auto pr-3 neuomorphic-scroll"
         style={{
           scrollBehavior: 'smooth',
           WebkitOverflowScrolling: 'touch',
         }}
       >
-        <div className="space-y-6 pr-1">
-          {children}
-        </div>
+        <div className="space-y-6 pr-1">{children}</div>
       </div>
 
       {showScrollHint && (
@@ -144,7 +179,6 @@ const ScrollablePanel = memo(({ children }: { children: React.ReactNode }) => {
     </div>
   );
 });
-
 ScrollablePanel.displayName = 'ScrollablePanel';
 
 // ============================================================
@@ -156,108 +190,121 @@ export default function About() {
   }, []);
 
   // Memoized content for scrollable panel
-  const scrollableContent = useMemo(() => (
-    <>
-      <div className="relative pl-5 border-l-2 border-red-500/30">
-        <Quote className="w-6 h-6 text-red-500/20 absolute -top-1 -left-1" />
-        <p className="text-zinc-300 text-sm md:text-base italic leading-relaxed pl-5 font-light tracking-wide">
-          &quot;In modern politics, data is the new currency, and strategy is the art of converting it into electoral success.&quot;
+  const scrollableContent = useMemo(
+    () => (
+      <>
+        <div className="relative pl-5 border-l-2 border-red-500/30">
+          <Quote className="w-6 h-6 text-red-500/20 absolute -top-1 -left-1" />
+          <p className="text-zinc-300 text-sm md:text-base italic leading-relaxed pl-5 font-light tracking-wide">
+            &quot;In modern politics, data is the new currency, and strategy is the art of
+            converting it into electoral success.&quot;
+          </p>
+        </div>
+
+        <p className="text-zinc-400 text-sm md:text-base leading-relaxed font-light tracking-wide">
+          We are a premier political intelligence firm dedicated to transforming how
+          political campaigns are strategized, executed, and won in the modern era.
         </p>
-      </div>
 
-      <p className="text-zinc-400 text-sm md:text-base leading-relaxed font-light tracking-wide">
-        We are a premier political intelligence firm dedicated to transforming 
-        how political campaigns are strategized, executed, and won in the modern era.
-      </p>
+        <p className="text-zinc-500 text-sm md:text-base leading-relaxed font-light tracking-wide">
+          With deep expertise in data analytics, grassroots strategy, and voter psychology,
+          we empower political leaders to make informed decisions that drive real impact.
+        </p>
 
-      <p className="text-zinc-500 text-sm md:text-base leading-relaxed font-light tracking-wide">
-        With deep expertise in data analytics, grassroots strategy, and voter 
-        psychology, we empower political leaders to make informed decisions 
-        that drive real impact.
-      </p>
+        <p className="text-zinc-500 text-sm md:text-base leading-relaxed font-light tracking-wide">
+          Our approach combines cutting-edge AI technology with decades of political
+          experience to deliver insights that are both actionable and transformative.
+        </p>
 
-      <p className="text-zinc-500 text-sm md:text-base leading-relaxed font-light tracking-wide">
-        Our approach combines cutting-edge AI technology with decades of political 
-        experience to deliver insights that are both actionable and transformative.
-      </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+          {EXPERTISE_ITEMS.map((item, index) => (
+            <div
+              key={index}
+              className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-[#020202]/40 border border-white/5 hover:border-red-500/20 transition-all duration-300 neuomorphic-flat"
+            >
+              <CheckCircle className="w-3.5 h-3.5 text-red-500 shrink-0" />
+              <span className="text-zinc-300 text-xs md:text-sm font-light tracking-wide">
+                {item}
+              </span>
+            </div>
+          ))}
+        </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-        {EXPERTISE_ITEMS.map((item, index) => (
-          <div
-            key={index}
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-[#020202]/40 border border-white/5 hover:border-red-500/20 transition-all duration-300 neuomorphic-flat"
-          >
-            <CheckCircle className="w-3.5 h-3.5 text-red-500 shrink-0" />
-            <span className="text-zinc-300 text-xs md:text-sm font-light tracking-wide">{item}</span>
-          </div>
-        ))}
-      </div>
-
-      <div className="grid grid-cols-3 gap-4 pt-2 pb-1">
-        {[
-          { value: '50+', label: 'Campaigns' },
-          { value: '15+', label: 'States' },
-          { value: '95%', label: 'Success Rate' },
-        ].map((stat, index) => (
-          <div key={index} className="text-center p-3.5 rounded-lg bg-[#020202]/40 border border-white/5 neuomorphic-flat">
-            <p className="text-2xl font-bold text-red-500 tracking-tight">{stat.value}</p>
-            <p className="text-[10px] text-zinc-500 uppercase tracking-[0.15em] font-light">{stat.label}</p>
-          </div>
-        ))}
-      </div>
-    </>
-  ), []);
+        <div className="grid grid-cols-3 gap-4 pt-2 pb-1">
+          {[
+            { value: '50+', label: 'Campaigns' },
+            { value: '15+', label: 'States' },
+            { value: '95%', label: 'Success Rate' },
+          ].map((stat, index) => (
+            <div
+              key={index}
+              className="text-center p-3.5 rounded-lg bg-[#020202]/40 border border-white/5 neuomorphic-flat"
+            >
+              <p className="text-2xl font-bold text-red-500 tracking-tight">{stat.value}</p>
+              <p className="text-[10px] text-zinc-500 uppercase tracking-[0.15em] font-light">
+                {stat.label}
+              </p>
+            </div>
+          ))}
+        </div>
+      </>
+    ),
+    []
+  );
 
   // Memoized expertise items
-  const expertiseItems = useMemo(() => 
-    EXPERTISE_ITEMS.map((item, index) => (
-      <motion.div
-        key={index}
-        initial={{ opacity: 0, x: -10 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.3, delay: index * 0.05 }}
-        viewport={{ once: true }}
-        className="flex items-center gap-3 text-zinc-400 text-xs md:text-sm font-light tracking-wide"
-      >
-        <div className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" aria-hidden="true" />
-        <span>{item}</span>
-      </motion.div>
-    )),
+  const expertiseItems = useMemo(
+    () =>
+      EXPERTISE_ITEMS.map((item, index) => (
+        <motion.div
+          key={index}
+          initial={{ opacity: 0, x: -10 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.3, delay: index * 0.05 }}
+          viewport={{ once: true }}
+          className="flex items-center gap-3 text-zinc-400 text-xs md:text-sm font-light tracking-wide"
+        >
+          <div className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" aria-hidden="true" />
+          <span>{item}</span>
+        </motion.div>
+      )),
     []
   );
 
   // Memoized stack items
-  const leftColumnItems = useMemo(() => 
-    STACK_ITEMS.slice(0, 3).map((item, index) => (
-      <ImageCard
-        key={item.label}
-        item={item}
-        index={index}
-        height="h-[160px] md:h-[200px]"
-        onInteraction={handleImageInteraction}
-      />
-    )),
+  const leftColumnItems = useMemo(
+    () =>
+      STACK_ITEMS.slice(0, 3).map((item, index) => (
+        <ImageCard
+          key={item.label}
+          item={item}
+          index={index}
+          height="h-[160px] md:h-[200px]"
+          onInteraction={handleImageInteraction}
+        />
+      )),
     [handleImageInteraction]
   );
 
-  const rightColumnItems = useMemo(() => 
-    STACK_ITEMS.slice(3).map((item, index) => (
-      <ImageCard
-        key={item.label}
-        item={item}
-        index={index + 3}
-        height="h-[250px] md:h-[310px]"
-        onInteraction={handleImageInteraction}
-      />
-    )),
+  const rightColumnItems = useMemo(
+    () =>
+      STACK_ITEMS.slice(3).map((item, index) => (
+        <ImageCard
+          key={item.label}
+          item={item}
+          index={index + 3}
+          height="h-[250px] md:h-[310px]"
+          onInteraction={handleImageInteraction}
+        />
+      )),
     [handleImageInteraction]
   );
 
-  const partiesArray = useMemo(() => POLITICAL_PARTIES as unknown as PoliticalParty[], []);
+  const partiesArray = useMemo(() => POLITICAL_PARTIES as PoliticalParty[], []);
 
   return (
-    <section 
-      id="about" 
+    <section
+      id="about"
       className="bg-[#020202] py-16 md:py-12 relative overflow-hidden"
       aria-labelledby="about-heading"
     >
@@ -274,10 +321,8 @@ export default function About() {
       </h2>
 
       <div className="mx-auto max-w-7xl px-4 sm:px-8 relative z-10">
-
         {/* ROW 1 - About Section with Image at TOP */}
         <div className="grid lg:grid-cols-[420px_1fr] gap-8 md:gap-12 items-start">
-          
           {/* LEFT: Owner Image - AT TOP with natural height */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -289,7 +334,7 @@ export default function About() {
             <div className="relative w-full mx-auto overflow-hidden group">
               <div className="relative" style={{ aspectRatio: '3/4' }}>
                 <Image
-                  src="/about/owner.png"
+                  src="/about/owner-2.png"
                   alt="Founder and CEO of NEVAS Political Consultancy"
                   fill
                   priority
@@ -297,11 +342,13 @@ export default function About() {
                   placeholder="blur"
                   blurDataURL={BLUR_DATA_URL}
                   className="object-cover drop-shadow-2xl transition-transform duration-700 group-hover:scale-105"
-                  style={{ 
+                  style={{
                     transform: 'scaleX(-1)',
-                    objectPosition: 'top center'
+                    objectPosition: 'top center',
                   }}
-                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                  }}
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-[#020202]/80 via-[#020202]/20 to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 h-1/4 bg-linear-to-t from-red-500/5 to-transparent" />
@@ -313,7 +360,9 @@ export default function About() {
           <div className="space-y-8">
             <div className="inline-flex items-center gap-3 px-4 py-2.5 rounded-full border border-red-500/20 bg-[#020202]/40 backdrop-blur-sm neuomorphic-flat">
               <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" aria-hidden="true" />
-              <span className="text-[10px] text-red-500 font-medium tracking-[0.2em] uppercase">Who We Are</span>
+              <span className="text-[10px] text-red-500 font-medium tracking-[0.2em] uppercase">
+                Who We Are
+              </span>
               <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" aria-hidden="true" />
             </div>
 
@@ -326,9 +375,7 @@ export default function About() {
             </h3>
 
             <div className="neuomorphic-card rounded-xl p-6 md:p-8 bg-[#020202]/60 backdrop-blur-sm border border-white/5">
-              <ScrollablePanel>
-                {scrollableContent}
-              </ScrollablePanel>
+              <ScrollablePanel>{scrollableContent}</ScrollablePanel>
             </div>
           </div>
         </div>
@@ -343,7 +390,9 @@ export default function About() {
             className="space-y-6"
           >
             <div className="inline-flex items-center gap-3 px-4 py-2.5 rounded-full border border-red-500/20 bg-[#020202]/40 backdrop-blur-sm neuomorphic-flat">
-              <span className="text-[10px] text-red-500 font-medium tracking-[0.2em] uppercase">Our Expertise</span>
+              <span className="text-[10px] text-red-500 font-medium tracking-[0.2em] uppercase">
+                Our Expertise
+              </span>
             </div>
 
             <h3 className="text-4xl md:text-5xl font-black text-white leading-[1.1] tracking-tight">
@@ -355,8 +404,8 @@ export default function About() {
             </h3>
 
             <p className="mt-2 leading-relaxed text-zinc-400 text-sm md:text-base font-light tracking-wide">
-              We combine cutting-edge data analytics with deep political insight to 
-              deliver strategies that win elections and shape policy.
+              We combine cutting-edge data analytics with deep political insight to deliver
+              strategies that win elections and shape policy.
             </p>
 
             <div className="mt-6 space-y-3" role="list">
@@ -373,12 +422,8 @@ export default function About() {
             className="relative"
           >
             <div className="grid grid-cols-2 gap-3 md:gap-4" role="list">
-              <div className="space-y-3 md:space-y-4">
-                {leftColumnItems}
-              </div>
-              <div className="space-y-3 md:space-y-4">
-                {rightColumnItems}
-              </div>
+              <div className="space-y-3 md:space-y-4">{leftColumnItems}</div>
+              <div className="space-y-3 md:space-y-4">{rightColumnItems}</div>
             </div>
             <div className="absolute -inset-4 border border-red-500/5 rounded-xl -z-10" aria-hidden="true" />
           </motion.div>
