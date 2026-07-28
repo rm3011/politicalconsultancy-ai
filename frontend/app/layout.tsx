@@ -28,10 +28,10 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://theedgewithjohn.com'),
   title: {
     template: '%s | The Edge With John - Political Consultancy',
-    default: 'The Edge With John - Political Consultancy',
+    default: 'AI-Powered Political Consultancy in India | The Edge With John',
   },
   description:
-    'Data-driven political consultancy leveraging AI, predictive analytics, and strategic intelligence. Transform your political campaign with The Edge With John.',
+    'AI-powered political intelligence firm delivering predictive analytics, real-time sentiment tracking, and data-driven strategy for winning campaigns.',
   keywords: [
     'political consultancy',
     'political strategy',
