@@ -61,9 +61,9 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: 'https://theedgewithjohn.com',
     siteName: 'The Edge With John',
-    title: 'The Edge With John - AI-Powered Political Consultancy',
+    title: 'AI-Powered Political Consultancy in India | The Edge With John',
     description:
-      'Data-driven political consultancy leveraging AI, predictive analytics, and strategic intelligence. Transform your political campaign.',
+      'AI-powered political intelligence firm delivering predictive analytics, real-time sentiment tracking, and data-driven strategy for winning campaigns.',
     images: [
       {
         url: '/logo-final.png',
@@ -77,9 +77,9 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     site: '@theedgewithjohn',
     creator: '@theedgewithjohn',
-    title: 'The Edge With John - AI-Powered Political Consultancy',
+    title: 'AI-Powered Political Consultancy in India | The Edge With John',
     description:
-      'Data-driven political consultancy leveraging AI, predictive analytics, and strategic intelligence.',
+      'AI-powered political intelligence firm delivering predictive analytics, real-time sentiment tracking, and data-driven strategy for winning campaigns.',
     images: ['/og-image.png'],
   },
   alternates: {
