@@ -112,10 +112,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     >
       <head>
         <meta name="msapplication-TileColor" content="#b89168" />
-        <meta
+        {/* <meta
           name="google-site-verification"
           content="your-google-verification-code"
-        />
+        /> */}
         <meta name="geo.region" content="IN" />
         <meta name="geo.placename" content="India" />
         <meta name="geo.position" content="20.5937;78.9629" />
