@@ -28,10 +28,10 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://theedgewithjohn.com'),
   title: {
     template: '%s | The Edge With John - Political Consultancy',
-    default: 'AI-Powered Political Consultancy in India | The Edge With John',
+    default: 'Political Consulting, Campaign Management & AI',
   },
   description:
-    'AI-powered political intelligence firm delivering predictive analytics, real-time sentiment tracking, and data-driven strategy for winning campaigns.',
+    'AI-powered political intelligence firm delivering predictive analytics, real-time sentiment tracking & data-driven strategy for winning campaigns.',
   keywords: [
     'political consultancy',
     'political strategy',
@@ -61,9 +61,9 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: 'https://theedgewithjohn.com',
     siteName: 'The Edge With John',
-    title: 'AI-Powered Political Consultancy in India | The Edge With John',
+    title: 'Political Consulting, Campaign Management & AI',
     description:
-      'AI-powered political intelligence firm delivering predictive analytics, real-time sentiment tracking, and data-driven strategy for winning campaigns.',
+      'AI-powered political intelligence firm delivering predictive analytics, real-time sentiment tracking & data-driven strategy for winning campaigns.',
     images: [
       {
         url: '/logo-final.png',
@@ -77,9 +77,9 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     site: '@theedgewithjohn',
     creator: '@theedgewithjohn',
-    title: 'AI-Powered Political Consultancy in India | The Edge With John',
+    title: 'Political Consulting, Campaign Management & AI',
     description:
-      'AI-powered political intelligence firm delivering predictive analytics, real-time sentiment tracking, and data-driven strategy for winning campaigns.',
+      'AI-powered political intelligence firm delivering predictive analytics, real-time sentiment tracking & data-driven strategy for winning campaigns.',
     images: ['/og-image.png'],
   },
   alternates: {
